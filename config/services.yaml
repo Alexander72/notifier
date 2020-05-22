@@ -23,5 +23,19 @@ services:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
 
+    TelegramClient:
+        class: \GuzzleHttp\Client
+        arguments:
+            - { base_uri: '%env(TELEGRAM_API_URI)%'}
+
+    App\Command\HandleTelegramUpdatesCommand:
+        arguments:
+            $client: '@TelegramClient'
+
+    TelegramBot\Api\BotApi:
+        arguments:
+            - '%env(TELEGRAM_BOT_TOKEN)%'
+
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
