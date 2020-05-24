@@ -33,7 +33,7 @@ class UpdateHandler
         $this->eventDispatcher->dispatch(new UpdateReceivedEvent($update));
 
         $command = $this->commandManager->getCommand($update);
-        $response = $command->execute($update->getMessage());
+        $response = $command->execute($update);
 
         if($response) {
             $this->telegramClient->sendMessage($response->getChatId(), $response->getText());

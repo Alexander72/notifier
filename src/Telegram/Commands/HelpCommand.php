@@ -3,14 +3,18 @@
 namespace App\Telegram\Commands;
 
 use App\Telegram\ValueObjects\OutgoingMessage;
-use TelegramBot\Api\Types\Message;
+use TelegramBot\Api\Types\Update;
 
 class HelpCommand extends TelegramStyleCommand
 {
     const COMMAND_NAME = 'help';
 
-    public function execute(Message $message): ?OutgoingMessage
+    public function execute(Update $update): ?OutgoingMessage
     {
-        return new OutgoingMessage($message->getChat()->getId(), 'Help message');
+        if (!$update->getMessage()) {
+            return null;
+        }
+
+        return new OutgoingMessage($update->getMessage()->getChat()->getId(), 'Help message');
     }
 }

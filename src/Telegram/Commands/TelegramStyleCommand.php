@@ -9,6 +9,12 @@ abstract class TelegramStyleCommand implements CommandInterface
 {
     public static function isAppliesTo(Update $update, StateInterface $state): bool
     {
-        return (bool) preg_match('/^\/?' . static::COMMAND_NAME . '($|\s)/i', trim($update->getMessage()->getText()));
+        $pattern = '/^\/?' . static::COMMAND_NAME . '($|\s)/i';
+        $text = $update->getMessage() ? $update->getMessage()->getText() : null;
+        if ($text === null) {
+            return false;
+        }
+
+        return (bool) preg_match($pattern, trim($text));
     }
 }

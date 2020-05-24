@@ -10,8 +10,8 @@ services:
 #    environment:
 #      MYSQL_ROOT_PASSWORD: "password"
 
-#  redis:
-#    image: redis
+  redis:
+    image: redis
 
   notifier:
     build:
