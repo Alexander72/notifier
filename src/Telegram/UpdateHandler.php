@@ -4,6 +4,7 @@ namespace App\Telegram;
 
 use App\Telegram\Events\UpdateHandledEvent;
 use App\Telegram\Events\UpdateReceivedEvent;
+use App\Telegram\Repositories\StateRepository;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use TelegramBot\Api\BotApi;
 use TelegramBot\Api\Types\Update;
@@ -16,14 +17,18 @@ class UpdateHandler
 
     private BotApi $telegramClient;
 
+    private StateRepository $stateRepository;
+
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
         CommandManager $commandManager,
-        BotApi $telegramClient
+        BotApi $telegramClient,
+        StateRepository $stateRepository
     ) {
         $this->eventDispatcher = $eventDispatcher;
         $this->commandManager = $commandManager;
         $this->telegramClient = $telegramClient;
+        $this->stateRepository = $stateRepository;
     }
 
     public function handle(array $update): void
@@ -33,7 +38,7 @@ class UpdateHandler
         $this->eventDispatcher->dispatch(new UpdateReceivedEvent($update));
 
         $command = $this->commandManager->getCommand($update);
-        $response = $command->execute($update);
+        $response = $command->execute($update, $this->stateRepository);
 
         if($response) {
             $this->telegramClient->sendMessage($response->getChatId(), $response->getText());

@@ -2,6 +2,7 @@
 
 namespace App\Telegram\Commands;
 
+use App\Telegram\Repositories\StateRepository;
 use App\Telegram\ValueObjects\OutgoingMessage;
 use TelegramBot\Api\Types\Update;
 
@@ -9,7 +10,7 @@ class EchoCommand extends TelegramStyleCommand
 {
     const COMMAND_NAME = 'echo';
 
-    public function execute(Update $update): ?OutgoingMessage
+    public function execute(Update $update, StateRepository $stateRepository): ?OutgoingMessage
     {
         if (!$update->getMessage()) {
             return null;

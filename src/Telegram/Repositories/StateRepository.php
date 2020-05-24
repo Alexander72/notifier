@@ -3,6 +3,8 @@
 namespace App\Telegram\Repositories;
 
 use App\Service\RedisService;
+use App\Telegram\States\NullState;
+use App\Telegram\States\StateInterface;
 
 class StateRepository
 {
@@ -17,9 +19,14 @@ class StateRepository
         $this->redisService = $redisService;
     }
 
-    public function findStateByChatId(int $chatId): string
+    public function findStateByChatId(int $chatId): StateInterface
     {
-        return $this->redisService->getRedis()->get($this->getCacheKey($chatId));
+        $stateName = $this->redisService->getRedis()->get($this->getCacheKey($chatId));
+        if (!$stateName) {
+            return new NullState();
+        }
+
+        return $this->stateResolver->getState($stateName);
     }
 
     public function saveState(int $chatId, string $state)
