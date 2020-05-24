@@ -25,4 +25,4 @@ WORKDIR /var/www/html/
 RUN curl --silent --show-error https://getcomposer.org/installer | php -- --install-dir=/bin --filename=composer
 RUN composer install
 
-CMD /usr/local/bin/php /var/www/html/bin/console HandleTelegramUpdates
+CMD /usr/local/bin/php /var/www/html/bin/console telegram:handleUpdates $TELEGRAM_BOT_TOKEN
