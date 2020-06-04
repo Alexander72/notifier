@@ -17,4 +17,9 @@ abstract class TelegramStyleCommand implements CommandInterface
 
         return (bool) preg_match($pattern, trim($text));
     }
+
+    protected function getChatIdByUpdate(Update $update): ?int
+    {
+        return $update->getMessage() ? $update->getMessage()->getChat()->getId() : null;
+    }
 }
