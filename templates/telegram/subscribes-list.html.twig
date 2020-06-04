@@ -1,0 +1,4 @@
+<b>You have {{ subscribes|length }} subscribers.</b>
+{% for subscribe in subscribes %}
+#{{ subscribe.id }} {{ subscribe.name }}
+{% endfor %}

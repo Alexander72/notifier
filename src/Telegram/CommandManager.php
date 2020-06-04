@@ -5,6 +5,7 @@ namespace App\Telegram;
 use App\Telegram\Commands\CommandInterface;
 use App\Telegram\Commands\EchoCommand;
 use App\Telegram\Commands\EightBallCommand;
+use App\Telegram\Commands\GetSubscribesCommand;
 use App\Telegram\Commands\HelpCommand;
 use App\Telegram\Repositories\StateRepository;
 use App\Telegram\States\NullState;
@@ -36,6 +37,7 @@ class CommandManager implements ServiceSubscriberInterface
             EchoCommand::class => EchoCommand::class,
             HelpCommand::class => HelpCommand::class,
             EightBallCommand::class => EightBallCommand::class,
+            GetSubscribesCommand::class => GetSubscribesCommand::class,
         ];
     }
 

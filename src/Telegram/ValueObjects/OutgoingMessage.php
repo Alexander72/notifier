@@ -4,14 +4,19 @@ namespace App\Telegram\ValueObjects;
 
 class OutgoingMessage
 {
+    const PARSE_MODE_HTML = 'HTML';
+
     private int $chatId;
 
     private string $text;
+
+    private string $parseMode;
 
     public function __construct(int $chatId, string $text)
     {
         $this->chatId = $chatId;
         $this->text = $text;
+        $this->parseMode = self::PARSE_MODE_HTML;
     }
 
     public function getChatId(): int
@@ -22,5 +27,15 @@ class OutgoingMessage
     public function getText(): string
     {
         return $this->text;
+    }
+
+    public function getParseMode(): ?string
+    {
+        return $this->parseMode;
+    }
+
+    public function setParseMode(string $parseMode): void
+    {
+        $this->parseMode = $parseMode;
     }
 }
