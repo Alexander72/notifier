@@ -11,6 +11,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -26,11 +27,14 @@ class HandleTelegramUpdatesCommand extends Command
 
     private UpdateDataRepository $updateDataRepository;
 
+    private string $telegramBotToken;
+
     public function __construct(
         ClientInterface $client,
         UpdateHandler $updateHandler,
         LoggerInterface $logger,
-        UpdateDataRepository $updateDataRepository
+        UpdateDataRepository $updateDataRepository,
+        string $telegramBotToken
     ) {
         parent::__construct();
 
@@ -38,11 +42,12 @@ class HandleTelegramUpdatesCommand extends Command
         $this->client = $client;
         $this->logger = $logger;
         $this->updateDataRepository = $updateDataRepository;
+        $this->telegramBotToken = $telegramBotToken;
     }
 
     protected function configure()
     {
-        $this->addArgument('telegramBotToken', InputArgument::REQUIRED);
+        $this->addOption('once', 'o', InputOption::VALUE_OPTIONAL, 'if specified then will be handled only one update, not in loop');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -61,6 +66,10 @@ class HandleTelegramUpdatesCommand extends Command
                 $this->logger->error($exception->getMessage());
                 //sleep(10);
             }
+
+            if ($input->getOption('once')) {
+                break;
+            }
         }
 
         return 1;
@@ -68,7 +77,7 @@ class HandleTelegramUpdatesCommand extends Command
 
     protected function getTelegramUri(InputInterface $input): string
     {
-        $result = '/bot' . $input->getArgument('telegramBotToken') . '/getUpdates';
+        $result = '/bot' . $this->telegramBotToken . '/getUpdates';
 
         $lastUpdateId = $this->updateDataRepository->getLastUpdateId();
         if ($lastUpdateId) {
